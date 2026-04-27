@@ -1,0 +1,37 @@
+{
+  "dialogues": [
+    {
+      "dialogueId": "intro_seiya_001",
+      "title": "오프닝 - 성역으로",
+      "lines": [
+        { "speaker": "None", "speakerName": "", "text": "그리스, 성역(聖域)의 외곽...\n청동 성투사들의 훈련이 끝을 고했다." },
+        { "speaker": "Seiya", "speakerName": "", "text": "나는 반드시 황금 성의(聖衣)를 손에 넣겠어!\n그리고 누나를 찾아낼 거야!" },
+        { "speaker": "Saori", "speakerName": "", "text": "성시... 이제 너희는 나를 지키는 성투사가 된 것이야.\n각오가 되어 있겠지?" },
+        { "speaker": "Seiya", "speakerName": "", "text": "물론이죠, 아테나!" }
+      ],
+      "choices": [], "nextDialogueId": "", "triggerQuestId": "quest_main_001", "returnToField": true
+    },
+    {
+      "dialogueId": "npc_elder_default",
+      "title": "성역 장로 대화",
+      "lines": [
+        { "speaker": "NPC", "speakerName": "장로", "text": "젊은 성투사여, 잘 왔군.\n성역에는 아직 위험한 자들이 도사리고 있다네." },
+        { "speaker": "NPC", "speakerName": "장로", "text": "북쪽 통로를 지나면 첫 번째 시련이 기다리고 있어.\n각오를 단단히 하게나." }
+      ],
+      "choices": [
+        { "choiceText": "도움을 청하겠습니다.", "nextDialogueId": "npc_elder_help", "questIdToAccept": "" },
+        { "choiceText": "혼자서 해결하겠습니다.", "nextDialogueId": "", "questIdToAccept": "" }
+      ],
+      "nextDialogueId": "", "triggerQuestId": "", "returnToField": true
+    },
+    {
+      "dialogueId": "battle_intro_001",
+      "title": "전투 전 대사",
+      "lines": [
+        { "speaker": "Enemy", "speakerName": "암흑 성투사", "text": "페가수스 성시... 이름은 들었다.\n하지만 여기서 끝이야!" },
+        { "speaker": "Seiya", "speakerName": "", "text": "덤벼라! 내 코스모가 불타오르고 있어!" }
+      ],
+      "choices": [], "nextDialogueId": "", "triggerQuestId": "", "returnToField": false
+    }
+  ]
+}

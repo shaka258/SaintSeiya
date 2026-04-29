@@ -1,0 +1,22 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_Script: {fileID: 11500000, guid: 00000000000000000000000000000003, type: 3}
+  m_Name: Item_PegasusFeather
+  itemId: item_key_pegasus_feather
+  itemName: "\ud398\uac00\uc218\uc2a4\uc758 \ub2a0\ub9c8"
+  description: "\ud398\uac00\uc218\uc2a4\uc790\ub9ac\uc5d0\uc11c \ub5a8\uc5b4\uc9c4 \uc2e0\uc131\ud55c \ub2a0\ub9c8.\n\ud2b9\uc218\ud55c \uc758\uc2dd\uc5d0 \uc0ac\uc6a9\ub41c\ub2e4."
+  itemType: 2
+  rarity: 3
+  isStackable: 0
+  maxStack: 1
+  hpRestore: 0
+  cosmosRestore: 0
+  hpRestoreRatio: 0
+  icon: {fileID: 0}
+  buyPrice: 0
+  sellPrice: 0

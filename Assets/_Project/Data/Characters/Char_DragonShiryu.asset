@@ -1,0 +1,29 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 00000000000000000000000000000002, type: 3}
+  m_Name: Char_DragonShiryu
+  characterName: "\uC2DC\uB958"
+  constellation: 1
+  clothRank: 0
+  baseHP: 700
+  baseAttack: 90
+  baseDefense: 70
+  baseSpeed: 60
+  hpGrowth: 40
+  attackGrowth: 7
+  defenseGrowth: 4
+  skills:
+  - {fileID: 11400000, guid: skill-roaring-mandible-001, type: 2}
+  portrait: {fileID: 0}
+  battleSprite: {fileID: 0}
+  animator: {fileID: 0}
+  battleVoiceLines: []

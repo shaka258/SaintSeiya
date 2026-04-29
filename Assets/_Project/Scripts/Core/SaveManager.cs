@@ -19,6 +19,7 @@ namespace SaintSeiya.Core
             public int currentChapter;
             public float playTime;
             public PlayerProgressData playerProgress;
+            public string inventoryJson;   // 인벤토리 직렬화
             public string lastSaveTime;
         }
 
@@ -39,7 +40,9 @@ namespace SaintSeiya.Core
 
         public void Save(SaveData data)
         {
-            data.lastSaveTime = System.DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss");
+            // 인벤토리 자동 직렬화
+            data.inventoryJson = Inventory.InventoryManager.Instance?.Serialize();
+            data.lastSaveTime  = System.DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss");
             string json = JsonConvert.SerializeObject(data, Formatting.Indented);
             File.WriteAllText(SavePath, json);
             _currentSave = data;
@@ -56,6 +59,9 @@ namespace SaintSeiya.Core
 
             string json = File.ReadAllText(SavePath);
             _currentSave = JsonConvert.DeserializeObject<SaveData>(json);
+            // 인벤토리 복원
+            if (!string.IsNullOrEmpty(_currentSave.inventoryJson))
+                Inventory.InventoryManager.Instance?.Deserialize(_currentSave.inventoryJson);
             Debug.Log($"[SaveManager] 불러오기 완료: {_currentSave.lastSaveTime}");
             return _currentSave;
         }

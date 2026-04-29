@@ -4,16 +4,20 @@ using System.Linq;
 
 namespace SaintSeiya.Data
 {
+<<<<<<< HEAD
     /// <summary>
     /// 모든 캐릭터 데이터를 보관하는 ScriptableObject 데이터베이스
     /// Resources 폴더에 배치 후 Resources.Load 또는
     /// Inspector에서 GameManager에 직접 연결해서 사용
     /// </summary>
+=======
+>>>>>>> 85d6086137a2cfa6b961a0149bcb69432042ea76
     [CreateAssetMenu(fileName = "CharacterDatabase", menuName = "SaintSeiya/CharacterDatabase")]
     public class CharacterDatabase : ScriptableObject
     {
         [SerializeField] private List<CharacterData> _characters = new();
 
+<<<<<<< HEAD
         // ─── 조회 ───────────────────────────────────────────────
 
         /// <summary>이름으로 캐릭터 데이터 검색</summary>
@@ -44,16 +48,32 @@ namespace SaintSeiya.Data
 
 #if UNITY_EDITOR
         // 에디터에서 자동으로 Assets/_Project/Data/Characters 폴더 스캔
+=======
+        public CharacterData GetByName(string name) => _characters.FirstOrDefault(c => c.characterName == name);
+        public CharacterData GetByConstellation(ConstellationType c) => _characters.FirstOrDefault(x => x.constellation == c);
+        public List<CharacterData> GetByRank(ClothRank rank) => _characters.Where(c => c.clothRank == rank).ToList();
+        public IReadOnlyList<CharacterData> GetAll() => _characters;
+        public int Count => _characters.Count;
+
+#if UNITY_EDITOR
+>>>>>>> 85d6086137a2cfa6b961a0149bcb69432042ea76
         [ContextMenu("Refresh from Assets folder")]
         private void RefreshFromFolder()
         {
             _characters.Clear();
+<<<<<<< HEAD
             var guids = UnityEditor.AssetDatabase.FindAssets(
                 "t:CharacterData", new[] { "Assets/_Project/Data/Characters" });
             foreach (var guid in guids)
             {
                 var path = UnityEditor.AssetDatabase.GUIDToAssetPath(guid);
                 var data = UnityEditor.AssetDatabase.LoadAssetAtPath<CharacterData>(path);
+=======
+            var guids = UnityEditor.AssetDatabase.FindAssets("t:CharacterData", new[] { "Assets/_Project/Data/Characters" });
+            foreach (var guid in guids)
+            {
+                var data = UnityEditor.AssetDatabase.LoadAssetAtPath<CharacterData>(UnityEditor.AssetDatabase.GUIDToAssetPath(guid));
+>>>>>>> 85d6086137a2cfa6b961a0149bcb69432042ea76
                 if (data != null) _characters.Add(data);
             }
             UnityEditor.EditorUtility.SetDirty(this);

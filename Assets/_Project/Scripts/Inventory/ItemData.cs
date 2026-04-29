@@ -2,6 +2,7 @@ using UnityEngine;
 
 namespace SaintSeiya.Inventory
 {
+<<<<<<< HEAD
     public enum ItemType
     {
         Consumable,     // 회복 아이템
@@ -17,16 +18,24 @@ namespace SaintSeiya.Inventory
         Rare,           // 희귀
         Legendary       // 전설
     }
+=======
+    public enum ItemType { Consumable, Equipment, KeyItem, Material }
+    public enum ItemRarity { Common, Uncommon, Rare, Legendary }
+>>>>>>> 85d6086137a2cfa6b961a0149bcb69432042ea76
 
     [CreateAssetMenu(fileName = "Item_New", menuName = "SaintSeiya/Item")]
     public class ItemData : ScriptableObject
     {
+<<<<<<< HEAD
         [Header("Info")]
+=======
+>>>>>>> 85d6086137a2cfa6b961a0149bcb69432042ea76
         public string itemId;
         public string itemName;
         [TextArea] public string description;
         public ItemType itemType;
         public ItemRarity rarity;
+<<<<<<< HEAD
 
         [Header("Stack")]
         public bool isStackable = true;
@@ -42,6 +51,15 @@ namespace SaintSeiya.Inventory
 
         [Header("Value")]
         public int buyPrice  = 100;
+=======
+        public bool isStackable = true;
+        public int maxStack = 99;
+        public float hpRestore = 0f;
+        public float cosmosRestore = 0f;
+        public float hpRestoreRatio = 0f;
+        public Sprite icon;
+        public int buyPrice = 100;
+>>>>>>> 85d6086137a2cfa6b961a0149bcb69432042ea76
         public int sellPrice = 30;
     }
 }

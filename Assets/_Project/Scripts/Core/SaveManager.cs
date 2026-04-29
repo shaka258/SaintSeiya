@@ -4,9 +4,6 @@ using Newtonsoft.Json;
 
 namespace SaintSeiya.Core
 {
-    /// <summary>
-    /// JSON 기반 저장/불러오기 시스템
-    /// </summary>
     public class SaveManager : MonoBehaviour
     {
         private const string SAVE_FILE = "save_data.json";
@@ -19,7 +16,11 @@ namespace SaintSeiya.Core
             public int currentChapter;
             public float playTime;
             public PlayerProgressData playerProgress;
+<<<<<<< HEAD
             public string inventoryJson;   // 인벤토리 직렬화
+=======
+            public string inventoryJson;
+>>>>>>> 85d6086137a2cfa6b961a0149bcb69432042ea76
             public string lastSaveTime;
         }
 
@@ -35,22 +36,28 @@ namespace SaintSeiya.Core
 
         private SaveData _currentSave;
         public SaveData CurrentSave => _currentSave;
-
         public bool HasSaveData => File.Exists(SavePath);
 
         public void Save(SaveData data)
         {
+<<<<<<< HEAD
             // 인벤토리 자동 직렬화
             data.inventoryJson = Inventory.InventoryManager.Instance?.Serialize();
             data.lastSaveTime  = System.DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss");
             string json = JsonConvert.SerializeObject(data, Formatting.Indented);
             File.WriteAllText(SavePath, json);
+=======
+            data.inventoryJson = Inventory.InventoryManager.Instance?.Serialize();
+            data.lastSaveTime  = System.DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss");
+            File.WriteAllText(SavePath, JsonConvert.SerializeObject(data, Formatting.Indented));
+>>>>>>> 85d6086137a2cfa6b961a0149bcb69432042ea76
             _currentSave = data;
             Debug.Log($"[SaveManager] 저장 완료: {SavePath}");
         }
 
         public SaveData Load()
         {
+<<<<<<< HEAD
             if (!HasSaveData)
             {
                 Debug.LogWarning("[SaveManager] 저장 파일 없음. 새 게임 데이터 반환.");
@@ -60,39 +67,22 @@ namespace SaintSeiya.Core
             string json = File.ReadAllText(SavePath);
             _currentSave = JsonConvert.DeserializeObject<SaveData>(json);
             // 인벤토리 복원
+=======
+            if (!HasSaveData) return NewGame();
+            _currentSave = JsonConvert.DeserializeObject<SaveData>(File.ReadAllText(SavePath));
+>>>>>>> 85d6086137a2cfa6b961a0149bcb69432042ea76
             if (!string.IsNullOrEmpty(_currentSave.inventoryJson))
                 Inventory.InventoryManager.Instance?.Deserialize(_currentSave.inventoryJson);
             Debug.Log($"[SaveManager] 불러오기 완료: {_currentSave.lastSaveTime}");
             return _currentSave;
         }
 
-        public void DeleteSave()
-        {
-            if (File.Exists(SavePath))
-            {
-                File.Delete(SavePath);
-                _currentSave = null;
-                Debug.Log("[SaveManager] 저장 데이터 삭제");
-            }
-        }
+        public void DeleteSave() { if (File.Exists(SavePath)) { File.Delete(SavePath); _currentSave = null; } }
 
-        private SaveData NewGame()
+        private SaveData NewGame() => new SaveData
         {
-            return new SaveData
-            {
-                playerId = System.Guid.NewGuid().ToString(),
-                currentChapter = 1,
-                playTime = 0f,
-                playerProgress = new PlayerProgressData
-                {
-                    level = 1,
-                    experience = 0,
-                    cosmos = 0,
-                    currentScene = "Field_SagittariusArena",
-                    posX = 0f,
-                    posY = 0f
-                }
-            };
-        }
+            playerId = System.Guid.NewGuid().ToString(), currentChapter = 1, playTime = 0f,
+            playerProgress = new PlayerProgressData { level = 1, experience = 0, cosmos = 0, currentScene = "Field_Sanctuary", posX = 0f, posY = 0f }
+        };
     }
 }

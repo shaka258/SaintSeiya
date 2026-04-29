@@ -15,6 +15,7 @@ namespace SaintSeiya.Core
         [SerializeField] private GameObject _audioManagerPrefab;
 
         [Header("Settings")]
+<<<<<<< HEAD
         [SerializeField] private float _minimumLoadTime = 1.5f; // 최소 로딩 시간 (초)
 
         IEnumerator Start()
@@ -41,6 +42,22 @@ namespace SaintSeiya.Core
             yield return new WaitForSeconds(_minimumLoadTime);
 
             // MainMenu로 전환
+=======
+        [SerializeField] private float _minimumLoadTime = 1.5f;
+
+        IEnumerator Start()
+        {
+            if (GameManager.Instance == null && _gameManagerPrefab != null)
+                Instantiate(_gameManagerPrefab);
+
+            if (AudioManager.Instance == null && _audioManagerPrefab != null)
+                Instantiate(_audioManagerPrefab);
+
+            GameManager.Instance?.SaveManager?.Load();
+
+            yield return new WaitForSeconds(_minimumLoadTime);
+
+>>>>>>> 85d6086137a2cfa6b961a0149bcb69432042ea76
             GameManager.Instance?.LoadScene("MainMenu");
         }
     }

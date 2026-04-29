@@ -2,10 +2,13 @@ using UnityEngine;
 
 namespace SaintSeiya.Utils
 {
+<<<<<<< HEAD
     /// <summary>
     /// 스프라이트 없이도 테스트 가능하도록
     /// 런타임에 컬러 사각형/원형 스프라이트를 자동 생성
     /// </summary>
+=======
+>>>>>>> 85d6086137a2cfa6b961a0149bcb69432042ea76
     public static class DebugSpriteFactory
     {
         public static Sprite CreateRect(Color color, int width = 32, int height = 48)
@@ -13,10 +16,15 @@ namespace SaintSeiya.Utils
             var tex = new Texture2D(width, height);
             var pixels = new Color[width * height];
             for (int i = 0; i < pixels.Length; i++) pixels[i] = color;
+<<<<<<< HEAD
             tex.SetPixels(pixels);
             tex.Apply();
             return Sprite.Create(tex, new Rect(0, 0, width, height),
                 new Vector2(0.5f, 0.5f), 32f);
+=======
+            tex.SetPixels(pixels); tex.Apply();
+            return Sprite.Create(tex, new Rect(0,0,width,height), new Vector2(0.5f,0.5f), 32f);
+>>>>>>> 85d6086137a2cfa6b961a0149bcb69432042ea76
         }
 
         public static Sprite CreateCircle(Color color, int size = 32)
@@ -27,6 +35,7 @@ namespace SaintSeiya.Utils
             for (int y = 0; y < size; y++)
             for (int x = 0; x < size; x++)
             {
+<<<<<<< HEAD
                 float dx = x - r, dy = y - r;
                 pixels[y * size + x] = (dx*dx + dy*dy <= r*r) ? color : Color.clear;
             }
@@ -44,6 +53,18 @@ namespace SaintSeiya.Utils
     public class AutoSprite : MonoBehaviour
     {
         [Header("Debug Sprite")]
+=======
+                float dx = x-r, dy = y-r;
+                pixels[y*size+x] = (dx*dx+dy*dy <= r*r) ? color : Color.clear;
+            }
+            tex.SetPixels(pixels); tex.Apply();
+            return Sprite.Create(tex, new Rect(0,0,size,size), new Vector2(0.5f,0.5f), 32f);
+        }
+    }
+
+    public class AutoSprite : MonoBehaviour
+    {
+>>>>>>> 85d6086137a2cfa6b961a0149bcb69432042ea76
         public Color color = Color.white;
         public bool isCircle = false;
 
@@ -51,10 +72,14 @@ namespace SaintSeiya.Utils
         {
             var sr = GetComponent<SpriteRenderer>();
             if (sr == null || sr.sprite != null) return;
+<<<<<<< HEAD
 
             sr.sprite = isCircle
                 ? DebugSpriteFactory.CreateCircle(color)
                 : DebugSpriteFactory.CreateRect(color);
+=======
+            sr.sprite = isCircle ? DebugSpriteFactory.CreateCircle(color) : DebugSpriteFactory.CreateRect(color);
+>>>>>>> 85d6086137a2cfa6b961a0149bcb69432042ea76
         }
     }
 }

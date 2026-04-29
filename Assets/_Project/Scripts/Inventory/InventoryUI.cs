@@ -5,6 +5,7 @@ using System.Collections.Generic;
 
 namespace SaintSeiya.Inventory
 {
+<<<<<<< HEAD
     /// <summary>
     /// 인벤토리 UI — 아이템 목록 표시 및 사용
     /// </summary>
@@ -19,6 +20,14 @@ namespace SaintSeiya.Inventory
         [SerializeField] private GameObject _itemSlotPrefab;
 
         [Header("Detail Panel")]
+=======
+    public class InventoryUI : MonoBehaviour
+    {
+        [SerializeField] private GameObject _panel;
+        [SerializeField] private KeyCode _toggleKey = KeyCode.I;
+        [SerializeField] private Transform _itemGrid;
+        [SerializeField] private GameObject _itemSlotPrefab;
+>>>>>>> 85d6086137a2cfa6b961a0149bcb69432042ea76
         [SerializeField] private GameObject _detailPanel;
         [SerializeField] private Image _detailIcon;
         [SerializeField] private TextMeshProUGUI _detailName;
@@ -26,6 +35,7 @@ namespace SaintSeiya.Inventory
         [SerializeField] private TextMeshProUGUI _detailCount;
         [SerializeField] private Button _useButton;
         [SerializeField] private Button _dropButton;
+<<<<<<< HEAD
 
         [Header("Slot Count")]
         [SerializeField] private TextMeshProUGUI _slotCountText;
@@ -129,11 +139,56 @@ namespace SaintSeiya.Inventory
             // 중요 아이템은 버리기 불가
             if (_dropButton != null)
                 _dropButton.gameObject.SetActive(data.itemType != ItemType.KeyItem);
+=======
+        [SerializeField] private TextMeshProUGUI _slotCountText;
+
+        private ItemData _selectedItem;
+
+        void Start()
+        {
+            _panel?.SetActive(false); _detailPanel?.SetActive(false);
+            _useButton?.onClick.AddListener(OnUseClicked);
+            _dropButton?.onClick.AddListener(OnDropClicked);
+            if (InventoryManager.Instance != null) InventoryManager.Instance.OnInventoryChanged += RefreshGrid;
+        }
+
+        void OnDestroy() { if (InventoryManager.Instance != null) InventoryManager.Instance.OnInventoryChanged -= RefreshGrid; }
+        void Update() { if (Input.GetKeyDown(_toggleKey)) Toggle(); }
+
+        public void Toggle()
+        {
+            bool next = !_panel.activeSelf; _panel?.SetActive(next);
+            if (next) { RefreshGrid(); Core.GameManager.Instance?.PauseGame(); }
+            else Core.GameManager.Instance?.ResumeGame();
+        }
+
+        private void RefreshGrid()
+        {
+            if (_itemGrid == null || InventoryManager.Instance == null) return;
+            foreach (Transform child in _itemGrid) Destroy(child.gameObject);
+            foreach (var (data, count) in InventoryManager.Instance.GetAllItems())
+            {
+                var slot = Instantiate(_itemSlotPrefab, _itemGrid);
+                slot.GetComponent<ItemSlotUI>()?.Setup(data, count, OnSlotClicked);
+            }
+            if (_slotCountText != null) _slotCountText.SetText($"{InventoryManager.Instance.UsedSlots} / {InventoryManager.Instance.MaxSlots}");
+        }
+
+        private void OnSlotClicked(ItemData data)
+        {
+            _selectedItem = data; _detailPanel?.SetActive(true);
+            if (_detailIcon != null && data.icon != null) _detailIcon.sprite = data.icon;
+            _detailName?.SetText(data.itemName); _detailDescription?.SetText(data.description);
+            _detailCount?.SetText($"보유: {InventoryManager.Instance?.GetItemCount(data.itemId)}개");
+            _useButton?.gameObject.SetActive(data.itemType == ItemType.Consumable);
+            _dropButton?.gameObject.SetActive(data.itemType != ItemType.KeyItem);
+>>>>>>> 85d6086137a2cfa6b961a0149bcb69432042ea76
         }
 
         private void OnUseClicked()
         {
             if (_selectedItem == null) return;
+<<<<<<< HEAD
 
             // 전투 중이면 전투 타겟, 아니면 플레이어
             var player = GameObject.FindGameObjectWithTag("Player")
@@ -145,15 +200,27 @@ namespace SaintSeiya.Inventory
                 int remaining = InventoryManager.Instance?.GetItemCount(_selectedItem.itemId) ?? 0;
                 if (remaining <= 0) _detailPanel?.SetActive(false);
                 else ShowDetail(_selectedItem);
+=======
+            var player = GameObject.FindGameObjectWithTag("Player")?.GetComponent<Characters.CharacterStats>();
+            if (InventoryManager.Instance?.UseItem(_selectedItem.itemId, player) == true)
+            {
+                if (InventoryManager.Instance.GetItemCount(_selectedItem.itemId) <= 0) { _detailPanel?.SetActive(false); _selectedItem = null; }
+                else OnSlotClicked(_selectedItem);
+>>>>>>> 85d6086137a2cfa6b961a0149bcb69432042ea76
             }
         }
 
         private void OnDropClicked()
         {
             if (_selectedItem == null) return;
+<<<<<<< HEAD
             InventoryManager.Instance?.RemoveItem(_selectedItem.itemId, 1);
             _detailPanel?.SetActive(false);
             _selectedItem = null;
+=======
+            InventoryManager.Instance?.RemoveItem(_selectedItem.itemId);
+            _detailPanel?.SetActive(false); _selectedItem = null;
+>>>>>>> 85d6086137a2cfa6b961a0149bcb69432042ea76
         }
     }
 }

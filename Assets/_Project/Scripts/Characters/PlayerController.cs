@@ -3,10 +3,13 @@ using UnityEngine.InputSystem;
 
 namespace SaintSeiya.Characters
 {
+<<<<<<< HEAD
     /// <summary>
     /// 플레이어 필드 이동 컨트롤러
     /// New Input System 기반 8방향 이동 + 대시 + 상호작용
     /// </summary>
+=======
+>>>>>>> 85d6086137a2cfa6b961a0149bcb69432042ea76
     [RequireComponent(typeof(Rigidbody2D))]
     [RequireComponent(typeof(Animator))]
     public class PlayerController : MonoBehaviour
@@ -16,6 +19,7 @@ namespace SaintSeiya.Characters
         [SerializeField] private float _dashSpeed    = 12f;
         [SerializeField] private float _dashDuration = 0.2f;
         [SerializeField] private float _dashCooldown = 1f;
+<<<<<<< HEAD
 
         [Header("Interaction")]
         [SerializeField] private float _interactRadius = 1.2f;
@@ -30,6 +34,13 @@ namespace SaintSeiya.Characters
         private PlayerInput _input;
 
         // State
+=======
+        [SerializeField] private float _interactRadius = 1.2f;
+        [SerializeField] private LayerMask _interactLayer;
+
+        private Rigidbody2D _rb;
+        private Animator _anim;
+>>>>>>> 85d6086137a2cfa6b961a0149bcb69432042ea76
         private Vector2 _moveInput;
         private Vector2 _lastMoveDir = Vector2.down;
         private bool _isDashing;
@@ -37,6 +48,7 @@ namespace SaintSeiya.Characters
         private float _dashCooldownTimer;
         private bool _canMove = true;
 
+<<<<<<< HEAD
         // Animator Parameter IDs (string → int 캐싱으로 성능 최적화)
         private static readonly int AnimMoveX    = Animator.StringToHash("MoveX");
         private static readonly int AnimMoveY    = Animator.StringToHash("MoveY");
@@ -159,11 +171,33 @@ namespace SaintSeiya.Characters
 
         private void UpdateAnimation()
         {
+=======
+        private static readonly int AnimMoveX  = Animator.StringToHash("MoveX");
+        private static readonly int AnimMoveY  = Animator.StringToHash("MoveY");
+        private static readonly int AnimSpeed  = Animator.StringToHash("Speed");
+        private static readonly int AnimIsDash = Animator.StringToHash("IsDash");
+
+        public static event System.Action<GameObject> OnInteractTriggered;
+
+        void Awake() { _rb = GetComponent<Rigidbody2D>(); _anim = GetComponent<Animator>(); }
+        void OnEnable()  => Core.GameManager.OnGameStateChanged += OnGameStateChanged;
+        void OnDisable() => Core.GameManager.OnGameStateChanged -= OnGameStateChanged;
+
+        public void OnMove(InputValue v)    => _moveInput = v.Get<Vector2>();
+        public void OnDash(InputValue v)    { if (v.isPressed) TryDash(); }
+        public void OnInteract(InputValue v){ if (v.isPressed) TryInteract(); }
+
+        void Update()
+        {
+            if (_isDashing) { _dashTimer -= Time.deltaTime; if (_dashTimer <= 0f) EndDash(); }
+            if (_dashCooldownTimer > 0f) _dashCooldownTimer -= Time.deltaTime;
+>>>>>>> 85d6086137a2cfa6b961a0149bcb69432042ea76
             _anim.SetFloat(AnimMoveX, _lastMoveDir.x);
             _anim.SetFloat(AnimMoveY, _lastMoveDir.y);
             _anim.SetFloat(AnimSpeed, _moveInput.sqrMagnitude);
         }
 
+<<<<<<< HEAD
         // ─── 이동 제어 ─────────────────────────────────────────
 
         public void SetCanMove(bool canMove)
@@ -201,4 +235,36 @@ namespace SaintSeiya.Characters
         public GameObject Target;
         public Vector3 PlayerPosition;
     }
+=======
+        void FixedUpdate()
+        {
+            if (!_canMove) return;
+            if (_isDashing) { _rb.linearVelocity = _lastMoveDir * _dashSpeed; return; }
+            _rb.linearVelocity = _moveInput * _moveSpeed;
+            if (_moveInput.sqrMagnitude > 0.01f) _lastMoveDir = _moveInput.normalized;
+        }
+
+        private void TryDash()
+        {
+            if (_isDashing || _dashCooldownTimer > 0f || !_canMove) return;
+            _isDashing = true; _dashTimer = _dashDuration; _dashCooldownTimer = _dashCooldown;
+            _anim.SetBool(AnimIsDash, true);
+        }
+
+        private void EndDash() { _isDashing = false; _anim.SetBool(AnimIsDash, false); }
+
+        private void TryInteract()
+        {
+            var hit = Physics2D.OverlapCircle(transform.position + (Vector3)_lastMoveDir * 0.5f, _interactRadius, _interactLayer);
+            if (hit != null) OnInteractTriggered?.Invoke(hit.gameObject);
+        }
+
+        public void SetCanMove(bool v) { _canMove = v; if (!v) { _rb.linearVelocity = Vector2.zero; _moveInput = Vector2.zero; } }
+
+        private void OnGameStateChanged(Core.GameManager.GameState state)
+            => SetCanMove(state == Core.GameManager.GameState.Field);
+    }
+
+    public struct PlayerInteractEvent { public GameObject Target; public Vector3 PlayerPosition; }
+>>>>>>> 85d6086137a2cfa6b961a0149bcb69432042ea76
 }

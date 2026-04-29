@@ -10,6 +10,7 @@ OcclusionCullingSettings:
     backfaceThreshold: 100
   m_SceneGUID: 00000000000000000000000000000000
   m_OcclusionCullingData: {fileID: 0}
+<<<<<<< HEAD
 --- !u!104 &2
 RenderSettings:
   m_ObjectHideFlags: 0
@@ -71,3 +72,5 @@ NavMeshSettings:
     debug:
       m_Flags: 0
   m_NavMeshData: {fileID: 0}
+=======
+>>>>>>> 85d6086137a2cfa6b961a0149bcb69432042ea76

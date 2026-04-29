@@ -2,6 +2,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
 using System.Collections.Generic;
+<<<<<<< HEAD
 using DG.Tweening;
 
 namespace SaintSeiya.Dialogue
@@ -26,10 +27,23 @@ namespace SaintSeiya.Dialogue
         [SerializeField] private GameObject _nextIndicator; // ▼ 계속 표시
 
         [Header("Choices")]
+=======
+
+namespace SaintSeiya.Dialogue
+{
+    public class DialogueUI : MonoBehaviour
+    {
+        [SerializeField] private GameObject _panel;
+        [SerializeField] private TextMeshProUGUI _speakerNameText;
+        [SerializeField] private Image _portraitImage;
+        [SerializeField] private TextMeshProUGUI _dialogueText;
+        [SerializeField] private GameObject _nextIndicator;
+>>>>>>> 85d6086137a2cfa6b961a0149bcb69432042ea76
         [SerializeField] private GameObject _choicePanel;
         [SerializeField] private Transform _choiceContainer;
         [SerializeField] private GameObject _choiceButtonPrefab;
 
+<<<<<<< HEAD
         [Header("Speaker Colors")]
         [SerializeField] private Color _seiyaColor   = new Color(0.2f, 0.6f, 1f);
         [SerializeField] private Color _shiryuColor  = new Color(0.2f, 0.8f, 0.3f);
@@ -52,10 +66,24 @@ namespace SaintSeiya.Dialogue
                 DialogueManager.Instance.OnChoicesShown += OnChoicesShown;
                 DialogueManager.Instance.OnDialogueEnd  += OnDialogueEnd;
             }
+=======
+        void Start()
+        {
+            _panel?.SetActive(false);
+            _choicePanel?.SetActive(false);
+            _nextIndicator?.SetActive(false);
+            if (DialogueManager.Instance == null) return;
+            DialogueManager.Instance.OnLineStart    += OnLineStart;
+            DialogueManager.Instance.OnTextUpdated  += t => _dialogueText?.SetText(t);
+            DialogueManager.Instance.OnLineComplete += () => _nextIndicator?.SetActive(true);
+            DialogueManager.Instance.OnChoicesShown += OnChoicesShown;
+            DialogueManager.Instance.OnDialogueEnd  += () => _panel?.SetActive(false);
+>>>>>>> 85d6086137a2cfa6b961a0149bcb69432042ea76
         }
 
         void OnDestroy()
         {
+<<<<<<< HEAD
             if (DialogueManager.Instance != null)
             {
                 DialogueManager.Instance.OnLineStart    -= OnLineStart;
@@ -64,10 +92,16 @@ namespace SaintSeiya.Dialogue
                 DialogueManager.Instance.OnChoicesShown -= OnChoicesShown;
                 DialogueManager.Instance.OnDialogueEnd  -= OnDialogueEnd;
             }
+=======
+            if (DialogueManager.Instance == null) return;
+            DialogueManager.Instance.OnLineStart    -= OnLineStart;
+            DialogueManager.Instance.OnDialogueEnd  -= () => _panel?.SetActive(false);
+>>>>>>> 85d6086137a2cfa6b961a0149bcb69432042ea76
         }
 
         void Update()
         {
+<<<<<<< HEAD
             // 스페이스 / 엔터 / E키로 다음 진행
             if (Input.GetKeyDown(KeyCode.Space) ||
                 Input.GetKeyDown(KeyCode.Return) ||
@@ -122,12 +156,30 @@ namespace SaintSeiya.Dialogue
             // ▼ 아이콘 맥동
             _nextIndicator?.transform.DOPunchScale(Vector3.one * 0.2f, 0.5f, 3, 0.5f)
                 .SetLoops(-1, LoopType.Restart);
+=======
+            if (Input.GetKeyDown(KeyCode.Space) || Input.GetKeyDown(KeyCode.Return) || Input.GetKeyDown(KeyCode.E))
+                DialogueManager.Instance?.Next();
+        }
+
+        private void OnLineStart(DialogueLine line)
+        {
+            _panel?.SetActive(true);
+            _nextIndicator?.SetActive(false);
+            _choicePanel?.SetActive(false);
+            _dialogueText?.SetText("");
+            string name = line.speaker == DialogueSpeaker.NPC ? line.speakerName
+                        : line.speaker == DialogueSpeaker.None ? ""
+                        : line.speaker.ToString();
+            _speakerNameText?.SetText(name);
+            if (_portraitImage != null && line.portrait != null) _portraitImage.sprite = line.portrait;
+>>>>>>> 85d6086137a2cfa6b961a0149bcb69432042ea76
         }
 
         private void OnChoicesShown(List<DialogueChoice> choices)
         {
             _nextIndicator?.SetActive(false);
             _choicePanel?.SetActive(true);
+<<<<<<< HEAD
 
             // 기존 선택지 버튼 제거
             foreach (Transform child in _choiceContainer)
@@ -180,5 +232,16 @@ namespace SaintSeiya.Dialogue
                 _                      => _defaultColor
             };
         }
+=======
+            foreach (Transform child in _choiceContainer) Destroy(child.gameObject);
+            for (int i = 0; i < choices.Count; i++)
+            {
+                int idx = i;
+                var btn = Instantiate(_choiceButtonPrefab, _choiceContainer);
+                btn.GetComponentInChildren<TextMeshProUGUI>()?.SetText(choices[i].choiceText);
+                btn.GetComponent<Button>()?.onClick.AddListener(() => DialogueManager.Instance?.SelectChoice(idx));
+            }
+        }
+>>>>>>> 85d6086137a2cfa6b961a0149bcb69432042ea76
     }
 }

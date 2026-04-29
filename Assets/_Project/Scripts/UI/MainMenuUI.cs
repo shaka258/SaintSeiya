@@ -1,6 +1,7 @@
 using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
+<<<<<<< HEAD
 using DG.Tweening;
 
 namespace SaintSeiya.UI
@@ -12,10 +13,18 @@ namespace SaintSeiya.UI
     public class MainMenuUI : MonoBehaviour
     {
         [Header("Buttons")]
+=======
+
+namespace SaintSeiya.UI
+{
+    public class MainMenuUI : MonoBehaviour
+    {
+>>>>>>> 85d6086137a2cfa6b961a0149bcb69432042ea76
         [SerializeField] private Button _newGameButton;
         [SerializeField] private Button _continueButton;
         [SerializeField] private Button _settingsButton;
         [SerializeField] private Button _quitButton;
+<<<<<<< HEAD
 
         [Header("Panels")]
         [SerializeField] private GameObject _settingsPanel;
@@ -24,10 +33,15 @@ namespace SaintSeiya.UI
         [SerializeField] private TextMeshProUGUI _titleText;
         [SerializeField] private CanvasGroup _mainGroup;
 
+=======
+        [SerializeField] private GameObject _settingsPanel;
+
+>>>>>>> 85d6086137a2cfa6b961a0149bcb69432042ea76
         void Start()
         {
             _newGameButton?.onClick.AddListener(OnNewGame);
             _continueButton?.onClick.AddListener(OnContinue);
+<<<<<<< HEAD
             _settingsButton?.onClick.AddListener(OnSettings);
             _quitButton?.onClick.AddListener(OnQuit);
 
@@ -56,10 +70,23 @@ namespace SaintSeiya.UI
             _mainGroup?.DOFade(0f, 0.5f).OnComplete(() =>
                 Core.GameManager.Instance?.LoadScene("WorldMap"));
         }
+=======
+            _settingsButton?.onClick.AddListener(() => _settingsPanel?.SetActive(true));
+            _quitButton?.onClick.AddListener(() => Core.GameManager.Instance?.QuitGame());
+
+            bool hasSave = Core.GameManager.Instance?.SaveManager?.HasSaveData ?? false;
+            _continueButton?.gameObject.SetActive(hasSave);
+
+            Core.AudioManager.Instance?.PlayBGM(Core.AudioManager.Instance.mainMenuBGM);
+        }
+
+        private void OnNewGame() => Core.GameManager.Instance?.LoadScene("WorldMap");
+>>>>>>> 85d6086137a2cfa6b961a0149bcb69432042ea76
 
         private void OnContinue()
         {
             var save = Core.GameManager.Instance?.SaveManager?.Load();
+<<<<<<< HEAD
             if (save == null) return;
 
             Core.AudioManager.Instance?.StopBGM();
@@ -75,6 +102,9 @@ namespace SaintSeiya.UI
         private void OnQuit()
         {
             Core.GameManager.Instance?.QuitGame();
+=======
+            if (save != null) Core.GameManager.Instance?.LoadScene(save.playerProgress?.currentScene ?? "WorldMap");
+>>>>>>> 85d6086137a2cfa6b961a0149bcb69432042ea76
         }
     }
 }

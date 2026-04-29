@@ -1,11 +1,15 @@
 using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
+<<<<<<< HEAD
 using DG.Tweening;
+=======
+>>>>>>> 85d6086137a2cfa6b961a0149bcb69432042ea76
 using SaintSeiya.Combat;
 
 namespace SaintSeiya.UI
 {
+<<<<<<< HEAD
     /// <summary>
     /// 코스모 게이지 UI
     /// - 게이지 바 채움
@@ -46,6 +50,24 @@ namespace SaintSeiya.UI
         {
             Unbind();
         }
+=======
+    public class CosmosGaugeUI : MonoBehaviour
+    {
+        [SerializeField] private Slider _slider;
+        [SerializeField] private Image _fill;
+        [SerializeField] private TextMeshProUGUI _valueText;
+        [SerializeField] private Color _normalColor  = new Color(0.2f, 0.5f, 1f);
+        [SerializeField] private Color _maxColor     = new Color(1f, 0.85f, 0.1f);
+        [SerializeField] private Color _burningColor = new Color(1f, 0.4f, 0f);
+        [SerializeField] private GameObject _maxGlow;
+        [SerializeField] private GameObject _burningEffect;
+        [SerializeField] private Button _burnButton;
+
+        private CosmosSystem _cosmos;
+
+        void Start() => _burnButton?.onClick.AddListener(() => _cosmos?.BurnCosmos());
+        void OnDestroy() => Unbind();
+>>>>>>> 85d6086137a2cfa6b961a0149bcb69432042ea76
 
         public void Bind(CosmosSystem cosmos)
         {
@@ -55,8 +77,11 @@ namespace SaintSeiya.UI
             _cosmos.OnCosmosMax     += OnCosmosMax;
             _cosmos.OnBurnStart     += OnBurnStart;
             _cosmos.OnBurnEnd       += OnBurnEnd;
+<<<<<<< HEAD
 
             // 초기값
+=======
+>>>>>>> 85d6086137a2cfa6b961a0149bcb69432042ea76
             UpdateGauge(_cosmos.CurrentCosmos, _cosmos.MaxCosmos);
         }
 
@@ -72,6 +97,7 @@ namespace SaintSeiya.UI
 
         private void UpdateGauge(float current, float max)
         {
+<<<<<<< HEAD
             if (_slider != null)
                 _slider.value = max > 0 ? current / max : 0f;
 
@@ -139,5 +165,18 @@ namespace SaintSeiya.UI
         {
             _cosmos?.BurnCosmos();
         }
+=======
+            if (_slider != null) _slider.value = max > 0 ? current / max : 0f;
+            _valueText?.SetText($"{Mathf.FloorToInt(current)} / {Mathf.FloorToInt(max)}");
+            if (_fill != null && !(_cosmos?.IsBurning ?? false))
+                _fill.color = Color.Lerp(_normalColor, _maxColor, max > 0 ? current / max : 0f);
+            if (_burnButton != null)
+                _burnButton.interactable = (max > 0 ? current / max : 0f) >= 0.5f && !(_cosmos?.IsBurning ?? false);
+        }
+
+        private void OnCosmosMax()    => _maxGlow?.SetActive(true);
+        private void OnBurnStart()    { _burningEffect?.SetActive(true); _maxGlow?.SetActive(false); if (_fill != null) _fill.color = _burningColor; }
+        private void OnBurnEnd()      { _burningEffect?.SetActive(false); if (_fill != null) _fill.color = _normalColor; }
+>>>>>>> 85d6086137a2cfa6b961a0149bcb69432042ea76
     }
 }

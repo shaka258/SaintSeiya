@@ -5,13 +5,17 @@ using Newtonsoft.Json;
 
 namespace SaintSeiya.Inventory
 {
+<<<<<<< HEAD
     /// <summary>
     /// 플레이어 인벤토리 — 아이템 추가/제거/사용/저장
     /// </summary>
+=======
+>>>>>>> 85d6086137a2cfa6b961a0149bcb69432042ea76
     public class InventoryManager : MonoBehaviour
     {
         public static InventoryManager Instance { get; private set; }
 
+<<<<<<< HEAD
         [Header("Settings")]
         [SerializeField] private int _maxSlots = 30;
 
@@ -48,10 +52,27 @@ namespace SaintSeiya.Inventory
             }
             return AddItem(data, amount);
         }
+=======
+        [SerializeField] private int _maxSlots = 30;
+        [SerializeField] private List<ItemData> _itemDatabase = new();
+
+        private Dictionary<string, int> _inventory = new();
+
+        public event System.Action<ItemData, int> OnItemAdded;
+        public event System.Action<ItemData, int> OnItemRemoved;
+        public event System.Action<ItemData>      OnItemUsed;
+        public event System.Action                OnInventoryChanged;
+
+        public int MaxSlots  => _maxSlots;
+        public int UsedSlots => _inventory.Count;
+
+        void Awake() { if (Instance != null) { Destroy(gameObject); return; } Instance = this; }
+>>>>>>> 85d6086137a2cfa6b961a0149bcb69432042ea76
 
         public bool AddItem(ItemData data, int amount = 1)
         {
             if (data == null || amount <= 0) return false;
+<<<<<<< HEAD
 
             // 슬롯 체크 (새 아이템인 경우)
             if (!_inventory.ContainsKey(data.itemId) && UsedSlots >= _maxSlots)
@@ -144,10 +165,48 @@ namespace SaintSeiya.Inventory
             }
             return result;
         }
+=======
+            if (!_inventory.ContainsKey(data.itemId) && UsedSlots >= _maxSlots) return false;
+            _inventory[data.itemId] = Mathf.Min((_inventory.TryGetValue(data.itemId, out int cur) ? cur : 0) + amount, data.maxStack);
+            OnItemAdded?.Invoke(data, amount); OnInventoryChanged?.Invoke(); return true;
+        }
+
+        public bool AddItem(string itemId, int amount = 1) { var d = FindItem(itemId); return d != null && AddItem(d, amount); }
+
+        public bool RemoveItem(string itemId, int amount = 1)
+        {
+            if (!_inventory.TryGetValue(itemId, out int cur) || cur < amount) return false;
+            var data = FindItem(itemId);
+            _inventory[itemId] -= amount;
+            if (_inventory[itemId] <= 0) _inventory.Remove(itemId);
+            if (data != null) OnItemRemoved?.Invoke(data, amount);
+            OnInventoryChanged?.Invoke(); return true;
+        }
+
+        public bool UseItem(string itemId, Characters.CharacterStats target = null)
+        {
+            var data = FindItem(itemId);
+            if (data == null || !HasItem(itemId) || data.itemType != ItemType.Consumable) return false;
+            if (target != null)
+            {
+                if (data.hpRestore > 0) target.Heal(data.hpRestore);
+                if (data.hpRestoreRatio > 0) target.Heal(target.MaxHP * data.hpRestoreRatio);
+                if (data.cosmosRestore > 0) target.cosmos?.GainCosmos(data.cosmosRestore);
+            }
+            RemoveItem(itemId); OnItemUsed?.Invoke(data); return true;
+        }
+
+        public bool HasItem(string itemId, int amount = 1) => _inventory.TryGetValue(itemId, out int c) && c >= amount;
+        public int  GetItemCount(string itemId) => _inventory.TryGetValue(itemId, out int c) ? c : 0;
+
+        public List<(ItemData data, int count)> GetAllItems()
+            => _inventory.Select(kv => (FindItem(kv.Key), kv.Value)).Where(x => x.Item1 != null).ToList();
+>>>>>>> 85d6086137a2cfa6b961a0149bcb69432042ea76
 
         public List<(ItemData data, int count)> GetItemsByType(ItemType type)
             => GetAllItems().Where(x => x.data.itemType == type).ToList();
 
+<<<<<<< HEAD
         // ─── 저장/불러오기 ──────────────────────────────────────
 
         public string Serialize()
@@ -171,5 +230,12 @@ namespace SaintSeiya.Inventory
             if (!_itemDatabase.Any(d => d.itemId == data.itemId))
                 _itemDatabase.Add(data);
         }
+=======
+        public string Serialize() => JsonConvert.SerializeObject(_inventory);
+        public void Deserialize(string json) { if (!string.IsNullOrEmpty(json)) { _inventory = JsonConvert.DeserializeObject<Dictionary<string, int>>(json) ?? new(); OnInventoryChanged?.Invoke(); } }
+
+        public void RegisterItem(ItemData data) { if (!_itemDatabase.Any(d => d.itemId == data.itemId)) _itemDatabase.Add(data); }
+        private ItemData FindItem(string id) => _itemDatabase.FirstOrDefault(d => d.itemId == id);
+>>>>>>> 85d6086137a2cfa6b961a0149bcb69432042ea76
     }
 }

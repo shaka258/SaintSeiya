@@ -11,7 +11,7 @@ public static class SceneSetupTool
     public static void SetupTags()
     {
         foreach (var tag in new[] { "Player", "Enemy", "NPC", "Item" }) AddTag(tag);
-        Debug.Log("✅ 태그 설정 완료! (Player, Enemy, NPC, Item)");
+        Debug.Log("✅ 태그 설정 완료!");
     }
 
     [MenuItem("SaintSeiya/Setup/② Configure Build Settings")]
@@ -21,7 +21,7 @@ public static class SceneSetupTool
         var scenes = new EditorBuildSettingsScene[paths.Length];
         for (int i = 0; i < paths.Length; i++) scenes[i] = new EditorBuildSettingsScene(paths[i], true);
         EditorBuildSettings.scenes = scenes;
-        Debug.Log("✅ Build Settings 완료!\n0:Boot / 1:MainMenu / 2:WorldMap / 3:Field / 4:Battle");
+        Debug.Log("✅ Build Settings 완료!");
     }
 
     [MenuItem("SaintSeiya/Setup/③ Boot Scene — Create Managers")]
@@ -33,7 +33,7 @@ public static class SceneSetupTool
         CreateCanvas("UI_Canvas");
         CreateEventSystem();
         EditorSceneManager.MarkSceneDirty(SceneManager.GetActiveScene());
-        Debug.Log("✅ Boot 씬 오브젝트 생성!\n각 오브젝트에 Inspector에서 스크립트 부착하세요.");
+        Debug.Log("✅ Boot 씬 완료!");
     }
 
     [MenuItem("SaintSeiya/Setup/④ MainMenu Scene — Create UI")]
@@ -48,7 +48,7 @@ public static class SceneSetupTool
         var sp = new GameObject("SettingsPanel"); sp.transform.SetParent(canvas.transform, false); sp.AddComponent<RectTransform>(); sp.SetActive(false);
         CreateEventSystem();
         EditorSceneManager.MarkSceneDirty(SceneManager.GetActiveScene());
-        Debug.Log("✅ MainMenu 씬 UI 생성!");
+        Debug.Log("✅ MainMenu 씬 완료!");
     }
 
     [MenuItem("SaintSeiya/Setup/⑤ Field Scene — Create Player & UI")]
@@ -59,8 +59,8 @@ public static class SceneSetupTool
         var player = new GameObject("Player"); player.tag = "Player";
         player.AddComponent<SpriteRenderer>();
         var rb = player.AddComponent<Rigidbody2D>(); rb.gravityScale = 0f; rb.constraints = RigidbodyConstraints2D.FreezeRotation;
-        var col = player.AddComponent<CapsuleCollider2D>(); col.size = new Vector2(0.6f, 0.9f);
-        player.AddComponent<Animator>(); player.AddComponent<UnityEngine.InputSystem.PlayerInput>();
+        player.AddComponent<CapsuleCollider2D>().size = new Vector2(0.6f, 0.9f);
+        player.AddComponent<Animator>();
         Undo.RegisterCreatedObjectUndo(player, "Create Player");
         var enemy = new GameObject("Enemy_01"); enemy.tag = "Enemy";
         enemy.AddComponent<SpriteRenderer>(); var erb = enemy.AddComponent<Rigidbody2D>(); erb.gravityScale = 0f;
@@ -73,7 +73,7 @@ public static class SceneSetupTool
         Undo.RegisterCreatedObjectUndo(grid, "Create Grid");
         CreateEventSystem();
         EditorSceneManager.MarkSceneDirty(SceneManager.GetActiveScene());
-        Debug.Log("✅ Field 씬 생성!\n⚠️ 각 오브젝트에 스크립트 및 CharacterData 연결 필요");
+        Debug.Log("✅ Field 씬 완료!\n⚠️ Player에 Inspector에서 직접 부착: PlayerInput, PlayerController, CharacterStats, CosmosSystem, LevelSystem");
     }
 
     [MenuItem("SaintSeiya/Setup/⑥ Battle Scene — Create Battle Objects")]
@@ -90,7 +90,7 @@ public static class SceneSetupTool
         CreateCanvas("BattleUI_Canvas");
         CreateEventSystem();
         EditorSceneManager.MarkSceneDirty(SceneManager.GetActiveScene());
-        Debug.Log("✅ Battle 씬 생성 완료!");
+        Debug.Log("✅ Battle 씬 완료!");
     }
 
     [MenuItem("SaintSeiya/Setup/⑦ Create Test Scene (빠른 테스트)")]
@@ -101,7 +101,7 @@ public static class SceneSetupTool
         player.AddComponent<SpriteRenderer>();
         var rb = player.AddComponent<Rigidbody2D>(); rb.gravityScale = 0f; rb.constraints = RigidbodyConstraints2D.FreezeRotation;
         player.AddComponent<CapsuleCollider2D>().size = new Vector2(0.6f, 0.9f);
-        player.AddComponent<Animator>(); player.AddComponent<UnityEngine.InputSystem.PlayerInput>();
+        player.AddComponent<Animator>();
         Undo.RegisterCreatedObjectUndo(player, "Create Player");
         var enemy = new GameObject("Enemy_01"); enemy.tag = "Enemy";
         enemy.AddComponent<SpriteRenderer>();
@@ -114,22 +114,19 @@ public static class SceneSetupTool
         CreateEventSystem();
         EditorSceneManager.MarkSceneDirty(SceneManager.GetActiveScene());
         Debug.Log("✅ 테스트 씬 생성 완료!\n" +
-                  "1. Player: PlayerController, CharacterStats, CosmosSystem, LevelSystem 부착\n" +
-                  "2. Enemy: EnemyController, CharacterStats 부착\n" +
-                  "3. TestSceneInitializer: TestSceneInitializer.cs 부착 후 Player/Enemy 드래그\n" +
-                  "4. Play 버튼!");
+                  "1. Player에 부착: PlayerInput, PlayerController, CharacterStats, CosmosSystem, LevelSystem\n" +
+                  "2. Enemy에 부착: EnemyController, CharacterStats\n" +
+                  "3. TestSceneInitializer에 부착: TestSceneInitializer.cs 후 Player/Enemy 드래그\n" +
+                  "4. Play!");
     }
 
-    // ─── 헬퍼 ───────────────────────────────────────────────────
     static GameObject CreateEmpty(string name) { var go = new GameObject(name); Undo.RegisterCreatedObjectUndo(go, $"Create {name}"); return go; }
 
     static Canvas CreateCanvas(string name)
     {
-        var go = CreateEmpty(name);
-        var c = go.AddComponent<Canvas>(); c.renderMode = RenderMode.ScreenSpaceOverlay;
+        var go = CreateEmpty(name); var c = go.AddComponent<Canvas>(); c.renderMode = RenderMode.ScreenSpaceOverlay;
         var s = go.AddComponent<CanvasScaler>(); s.uiScaleMode = CanvasScaler.ScaleMode.ScaleWithScreenSize; s.referenceResolution = new Vector2(1920, 1080);
-        go.AddComponent<GraphicRaycaster>();
-        return c;
+        go.AddComponent<GraphicRaycaster>(); return c;
     }
 
     static GameObject MakeButton(Transform parent, string name, string label, Vector2 pos)
@@ -137,8 +134,7 @@ public static class SceneSetupTool
         var go = new GameObject(name); go.transform.SetParent(parent, false);
         var rt = go.AddComponent<RectTransform>(); rt.sizeDelta = new Vector2(220, 55); rt.anchoredPosition = pos;
         go.AddComponent<Image>().color = new Color(0.15f, 0.15f, 0.3f, 0.9f);
-        go.AddComponent<Button>();
-        return go;
+        go.AddComponent<Button>(); return go;
     }
 
     static void CreateEventSystem()
@@ -146,7 +142,8 @@ public static class SceneSetupTool
         if (Object.FindFirstObjectByType<UnityEngine.EventSystems.EventSystem>() != null) return;
         var es = CreateEmpty("EventSystem");
         es.AddComponent<UnityEngine.EventSystems.EventSystem>();
-        es.AddComponent<UnityEngine.InputSystem.UI.InputSystemUIInputModule>();
+        es.AddComponent<UnityEngine.EventSystems.StandaloneInputModule>();
+        Debug.Log("⚠️ EventSystem 생성됨. Input System 패키지 사용 시 StandaloneInputModule → InputSystemUIInputModule로 교체하세요.");
     }
 
     static void AddTag(string tag)
